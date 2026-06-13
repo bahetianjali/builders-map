@@ -655,11 +655,59 @@ function renderResults(){
 }
 document.querySelectorAll('.lens-btn').forEach(b=>b.addEventListener('click',()=>applyLens(b.dataset.lens,b)));
 
-async function getLikeCount(){try{const r=await window.storage.get('wv3-likes',true);return r?parseInt(r.value):0}catch(e){return 0}}
-async function hasUserLiked(){try{const fp=await getFP();const r=await window.storage.get('wv3-u-'+fp,false);return!!r}catch(e){return false}}
-async function getFP(){const s=[navigator.userAgent,navigator.language,screen.width,screen.height,new Date().getTimezoneOffset()].join('|');let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h).toString(36)}
-async function initLike(){try{const liked=await hasUserLiked();const count=await getLikeCount();if(count>0){document.getElementById('likeCount').style.display='block';document.getElementById('likeNumber').textContent=count}if(liked){const b=document.getElementById('likeBtn');b.classList.add('liked');document.getElementById('likeBtnText').textContent='You liked this';b.querySelector('.heart-icon').setAttribute('fill','white')}}catch(e){}}
-async function handleLike(){const b=document.getElementById('likeBtn');if(b.classList.contains('liked'))return;try{if(await hasUserLiked())return;b.classList.add('animate-heart');setTimeout(()=>b.classList.remove('animate-heart'),700);const fp=await getFP();await window.storage.set('wv3-u-'+fp,'1',false);let c=await getLikeCount();c++;await window.storage.set('wv3-likes',c.toString(),true);b.classList.add('liked');document.getElementById('likeBtnText').textContent='You liked this';b.querySelector('.heart-icon').setAttribute('fill','white');document.getElementById('likeNumber').textContent=c;document.getElementById('likeCount').style.display='block'}catch(e){console.error(e)}}
+// LIKE BUTTON — Abacus counter (real backend) + localStorage (per-user lock)
+const ABACUS_NS = 'builders-map';
+const ABACUS_KEY = 'likes';
+const LIKED_FLAG = 'bm-liked-v1';
+
+function hasUserLiked() {
+  try { return localStorage.getItem(LIKED_FLAG) === '1'; } catch(e) { return false; }
+}
+function markUserLiked() {
+  try { localStorage.setItem(LIKED_FLAG, '1'); } catch(e) {}
+}
+async function fetchCount() {
+  try {
+    const r = await fetch(`https://abacus.jasoncameron.dev/get/${ABACUS_NS}/${ABACUS_KEY}`);
+    if (!r.ok) return null;
+    const data = await r.json();
+    return typeof data.value === 'number' ? data.value : null;
+  } catch(e) { return null; }
+}
+async function incrementCount() {
+  try {
+    const r = await fetch(`https://abacus.jasoncameron.dev/hit/${ABACUS_NS}/${ABACUS_KEY}`);
+    if (!r.ok) return null;
+    const data = await r.json();
+    return typeof data.value === 'number' ? data.value : null;
+  } catch(e) { return null; }
+}
+function showCount(n) {
+  if (n === null || n === undefined || n <= 0) return;
+  document.getElementById('likeCount').style.display = 'block';
+  document.getElementById('likeNumber').textContent = n;
+}
+function setLikedUI() {
+  const b = document.getElementById('likeBtn');
+  b.classList.add('liked');
+  document.getElementById('likeBtnText').textContent = 'You liked this';
+  b.querySelector('.heart-icon').setAttribute('fill', 'white');
+}
+async function initLike() {
+  const count = await fetchCount();
+  if (count !== null) showCount(count);
+  if (hasUserLiked()) setLikedUI();
+}
+async function handleLike() {
+  const b = document.getElementById('likeBtn');
+  if (b.classList.contains('liked') || hasUserLiked()) return;
+  b.classList.add('animate-heart');
+  setTimeout(() => b.classList.remove('animate-heart'), 700);
+  markUserLiked();
+  setLikedUI();
+  const newCount = await incrementCount();
+  if (newCount !== null) showCount(newCount);
+}
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:0.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 buildSliders();renderResults();initLike();
