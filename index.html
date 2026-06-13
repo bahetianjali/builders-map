@@ -554,14 +554,14 @@ footer a:hover{text-decoration:underline}
     <span id="likeBtnText">This made me think</span>
   </button>
   <div class="like-count" id="likeCount" style="display:none"><strong id="likeNumber">0</strong> people found this useful</div>
-  <p class="playground-handoff">Or, if you would rather poke at the framework yourself, <a href="#playground">try the Builder's Map ↓</a></p>
+  <p class="playground-handoff">If you have a behavioral shift in mind, <a href="#playground">build a lens for it ↓</a></p>
 </section>
 
 <section class="playground" id="playground">
   <div class="playground-inner">
     <div class="section-eyebrow">Pick Your Lens</div>
     <h2>Pick a lens.<br>Or build your <em>own.</em></h2>
-    <p class="playground-desc">Start from a preset lens that feels closest to how you think. Then drag the sliders to match what fits your needs.</p>
+    <p class="playground-desc">The three preset lenses see what the framework can see today. The Custom lens is for what it cannot. If you are watching a behavioral shift nobody is pricing in yet, this is where you weight it.</p>
     <div class="lens-buttons">
       <button class="lens-btn founder active" data-lens="founder">Startup Founder</button>
       <button class="lens-btn social" data-lens="social">Policy Thinker</button>
@@ -603,7 +603,7 @@ const LENSES={
   founder:{weights:{pain:3,frequency:2,wtp:5,economic:4,competition:3,infrastructure:3,regulatory:2,cultural:3},insight:"<strong>Startup Founder Lens:</strong> Willingness to Pay and Economic Cost lead. Healthcare Admin and Legal Tech surface because someone is already spending on these problems, badly. Immigration drops because the human pain is real but the paying customer is hard to find. Legal tech spending grew 9.7% in 2025, the fastest real growth in the industry's history."},
   social:{weights:{pain:5,frequency:4,wtp:1,economic:2,competition:2,infrastructure:3,regulatory:2,cultural:4},insight:"<strong>Policy Thinker Lens:</strong> Pain and Frequency dominate. Who is suffering and how often. Immigration surfaces fast here because the human cost is enormous, even when the software market is small ($527M vs $34B for legal tech). The Execution layer still matters because impact only counts if it actually lands."},
   platform:{weights:{pain:2,frequency:2,wtp:4,economic:5,competition:2,infrastructure:4,regulatory:5,cultural:3},insight:"<strong>Platform Builder Lens:</strong> Economic Cost and Regulatory Ease become features, not bugs. Healthcare Admin tops because the durability is enormous: $687B in admin costs is not going away. The regulatory complexity that scares startup founders is exactly the moat a platform builder wants."},
-  custom:{weights:{pain:3,frequency:3,wtp:3,economic:3,competition:3,infrastructure:3,regulatory:3,cultural:3},insight:"<strong>Custom Lens:</strong> Start from one of the presets above (Founder, Policy Thinker, or Platform Builder) and tweak from there. A healthcare founder might take the Startup Founder lens but push Regulatory Ease higher. A construction-focused builder might weight Infrastructure Readiness above everything else. Drag to match what fits your reality, not anyone else's."}
+  custom:{weights:{pain:3,frequency:3,wtp:3,economic:3,competition:3,infrastructure:3,regulatory:3,cultural:3},insight:"<strong>Custom Lens:</strong> This is the lens the framework cannot ship with. The presets see what is already true. This one is for what is about to be true. If you are watching a behavior shift the data does not know about yet, push the factors that catch it. Maybe Cultural Adoption climbs to 5 because you think a population is one trust signal away from going digital. Maybe Willingness to Pay drops to 1 because you believe a market is going to assemble around a problem no one currently pays for. The presets cannot do that. You can."}
 };
 let currentWeights={...LENSES.founder.weights};
 let currentLens='founder';
